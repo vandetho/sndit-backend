@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1, minimum-scale=1" />
+        <meta name="title" content="Sndit">
+        <meta name="description"
+              content="Sndit is an application that allows its user to management their business delivery through cloud system which help them to reduce cost by giving them the advantages of workflow which can help the business owner by reducing risk of management">
+        <meta name="keywords"
+              content="Billing, Inventory, Finance, Tracking, Delivery, Order, Category, Application, Multiple, Products, Members, Group, Orders, Sharable, Private, Cloud, Invoice, Workflow, Cambodia, Cambodge, Khmer, English, Francais, French">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+        <meta name="theme-color" content="#FF9715">
+        <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
+        <link rel="manifest" href="{{ asset('manifest.json') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('images/icon-512x512.png') }}" />
+        <title>{% block title %}Welcome!{% endblock title %}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+              rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+              integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+              crossorigin="" />
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('sndit_app') }}
+        {% endblock stylesheets %}
+    </head>
+    <body>
+        {% block body %}
+            <div id="sndit_app"></div>
+        {% endblock body %}
+
+        {% block twig_params %}
+        {% endblock twig_params %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('sndit_app') }}
+        {% endblock javascripts %}
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+                integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+                crossorigin=""></script>
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+        <script>
+            AOS.init({
+                duration: 1000,
+            });
+        </script>
+    </body>
+</html>

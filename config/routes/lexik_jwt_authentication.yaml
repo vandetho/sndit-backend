@@ -1,0 +1,5 @@
+sndit_api_login_check:
+    path: /api/login_check
+
+sndit_internal_api_login_check:
+    path: /internal/api/login_check

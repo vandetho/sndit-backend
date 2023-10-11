@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ES2020",
+        "moduleResolution": "node",
+        "declaration": false,
+        "noImplicitAny": false,
+        "resolveJsonModule": true,
+        "jsx": "react",
+        "typeRoots": [
+            "./src/@types",
+            "./node_modules/@types"
+        ],
+        "sourceMap": true,
+        "noLib": false,
+        "suppressImplicitAnyIndexErrors": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": "assets/src",
+        "paths": {
+            "@config": ["config/index.ts"],
+            "@constants": ["constants/index.ts"],
+            "@context": ["context/index.ts"],
+            "@components": ["components/index.ts"],
+            "@fetchers": ["fetchers/index.ts"],
+            "@hooks": ["hooks/index.ts"],
+            "@i18n": ["i18n.ts"],
+            "@images/*": ["../images/*"],
+            "@lotties/*": ["../lotties/*"],
+            "@interfaces": ["interfaces/index.ts"],
+            "@interfaces/*": ["interfaces/*"],
+            "@theme": ["theme/index.ts"],
+            "@utils": ["utils/index.ts"],
+            "@workflow": ["workflow/index.ts"],
+        }
+    },
+    "compileOnSave": false,
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "assets/src",
+        "assets/src/**/*.ts",
+        "assets/src/**/*.tsx"
+    ]
+}

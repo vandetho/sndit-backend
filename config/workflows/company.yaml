@@ -1,0 +1,43 @@
+framework:
+    workflows:
+        company:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type:     'method'
+                property: 'marking'
+            supports:
+                - App\Entity\Company
+            initial_marking: !php/const App\Workflow\Status\CompanyStatus::NEW_COMPANY
+            places:
+                !php/const App\Workflow\Status\CompanyStatus::NEW_COMPANY:
+                !php/const App\Workflow\Status\CompanyStatus::LISTING:
+                !php/const App\Workflow\Status\CompanyStatus::ADDING_EMPLOYEE:
+                !php/const App\Workflow\Status\CompanyStatus::UPDATING_INFORMATION:
+            transitions:
+                !php/const App\Workflow\Transition\CompanyTransition::CREATE_COMPANY:
+                    from:
+                        - !php/const App\Workflow\Status\CompanyStatus::NEW_COMPANY
+                    to:
+                        - !php/const App\Workflow\Status\CompanyStatus::LISTING
+                !php/const App\Workflow\Transition\CompanyTransition::ADD_EMPLOYEE:
+                    from:
+                        - !php/const App\Workflow\Status\CompanyStatus::LISTING
+                    to:
+                        - !php/const App\Workflow\Status\CompanyStatus::ADDING_EMPLOYEE
+                !php/const App\Workflow\Transition\CompanyTransition::EMPLOYEE_ADDED:
+                    from:
+                        - !php/const App\Workflow\Status\CompanyStatus::ADDING_EMPLOYEE
+                    to:
+                        - !php/const App\Workflow\Status\CompanyStatus::LISTING
+                !php/const App\Workflow\Transition\CompanyTransition::UPDATE_INFORMATION:
+                    from:
+                        - !php/const App\Workflow\Status\CompanyStatus::LISTING
+                    to:
+                        - !php/const App\Workflow\Status\CompanyStatus::UPDATING_INFORMATION
+                !php/const App\Workflow\Transition\CompanyTransition::INFORMATION_UPDATED:
+                    from:
+                        - !php/const App\Workflow\Status\CompanyStatus::UPDATING_INFORMATION
+                    to:
+                        - !php/const App\Workflow\Status\CompanyStatus::LISTING

@@ -1,0 +1,43 @@
+doctrine:
+    dbal:
+        url: '%env(DATABASE_URL)%'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy:             doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping:                true
+        mappings:
+            App:
+                is_bundle: false
+                dir:       '%kernel.project_dir%/src/Entity'
+                prefix:    'App\Entity'
+                alias:     App
+                type:      attribute
+        dql:
+            string_functions:
+                ACOS:          DoctrineExtensions\Query\Mysql\Acos
+                COS:           DoctrineExtensions\Query\Mysql\Cos
+                IF:            DoctrineExtensions\Query\Mysql\IfElse
+                MONTH:         DoctrineExtensions\Query\Mysql\Month
+                PI:            DoctrineExtensions\Query\Mysql\Pi
+                RADIANS:       DoctrineExtensions\Query\Mysql\Radians
+                SIN:           DoctrineExtensions\Query\Mysql\Sin
+                YEAR:          DoctrineExtensions\Query\Mysql\Year
+                JSON_EXTRACT:  Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                JSON_SEARCH:   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+                JSON_CONTAINS: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
+        hydrators:
+            App\DTO\City:                    App\Hydrators\CityHydrator
+            App\DTO\Company:                 App\Hydrators\CompanyHydrator
+            App\DTO\Employee:                App\Hydrators\EmployeeHydrator
+            App\DTO\OTP:                     App\Hydrators\OTPHydrator
+            App\DTO\Package:                 App\Hydrators\PackageHydrator
+            App\DTO\PackageHistory:          App\Hydrators\PackageHistoryHydrator
+            App\DTO\MonthlyReport:           App\Hydrators\MonthlyReportHydrator
+            App\DTO\Template:                App\Hydrators\TemplateHydrator
+            App\DTO\Ticket:                  App\Hydrators\TicketHydrator
+            App\DTO\TicketAttachment:        App\Hydrators\TicketAttachmentHydrator
+            App\DTO\TicketMessage:           App\Hydrators\TicketMessageHydrator
+            App\DTO\Tracking:                App\Hydrators\TrackingHydrator
+            App\DTO\User:                    App\Hydrators\UserHydrator
+            App\DTO\InternalUser:            App\Hydrators\InternalUserHydrator
+            App\DTO\UserNotificationMessage: App\Hydrators\UserNotificationMessageHydrator

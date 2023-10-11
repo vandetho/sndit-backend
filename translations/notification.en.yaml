@@ -1,0 +1,7 @@
+body:
+    package_given_to_deliverer: 'The package name ''%name%'' has been given to you for delivery'
+    package_delivered: 'The package name ''%name%'' has been delivered by ''%username%'''
+
+title:
+    package_given_to_deliverer: 'Package ''%name%'' given for delivery'
+    package_delivered: 'Package ''%name%'' delivered'

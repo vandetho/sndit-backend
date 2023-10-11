@@ -1,0 +1,43 @@
+parameters:
+    moviderApiKey:    '%env(resolve:MOVIDER_API_KEY)%'
+    moviderApiSecret: '%env(resolve:MOVIDER_API_SECRET)%'
+    mobileScheme:     '%env(resolve:MOBILE_SCHEME)%'
+
+services:
+    _defaults:
+        autowire:      true
+        autoconfigure: true
+        bind:
+            $moviderApiKey:    '%moviderApiKey%'
+            $moviderApiSecret: '%moviderApiSecret%'
+            $mobileScheme:      '%mobileScheme%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Constants/'
+            - '../src/DTO/'
+            - '../src/Entity/'
+            - '../src/Event/'
+            - '../src/Kernel.php'
+
+    App\Security\CustomAuthenticator:
+        arguments:
+            - '@App\Repository\UserRepository'
+            - '@Symfony\Contracts\Translation\TranslatorInterface'
+            - '@App\OTP\MoviderOTP'
+            - '@Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface'
+            - '@Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface'
+            - '@lexik_jwt_authentication.handler.authentication_success'
+            - '%env(resolve:REFRESH_TOKEN_TTL)%'
+
+    App\Security\CustomInternalAuthenticator:
+        arguments:
+            - '@App\Repository\InternalUserRepository'
+            - '@Symfony\Contracts\Translation\TranslatorInterface'
+            - '@lexik_jwt_authentication.handler.authentication_success'
+
+    app.custom_authenticator:
+        class: App\Security\CustomJWTAuthenticator
+        parent: lexik_jwt_authentication.security.jwt_authenticator

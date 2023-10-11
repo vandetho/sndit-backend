@@ -1,0 +1,44 @@
+framework:
+    workflows:
+        employee:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type:     'method'
+                property: 'marking'
+            supports:
+                - App\Entity\Employee
+            initial_marking: !php/const App\Workflow\Status\EmployeeStatus::NEW_EMPLOYEE
+            places:
+                !php/const App\Workflow\Status\EmployeeStatus::NEW_EMPLOYEE:
+                !php/const App\Workflow\Status\EmployeeStatus::ACTIVE:
+                !php/const App\Workflow\Status\EmployeeStatus::INACTIVE:
+                !php/const App\Workflow\Status\EmployeeStatus::CHANGING_ROLE:
+
+            transitions:
+                !php/const App\Workflow\Transition\EmployeeTransition::CREATE_NEW_EMPLOYEE:
+                    from:
+                        - !php/const App\Workflow\Status\EmployeeStatus::NEW_EMPLOYEE
+                    to:
+                        - !php/const App\Workflow\Status\EmployeeStatus::ACTIVE
+                !php/const App\Workflow\Transition\EmployeeTransition::CHANGE_ROLE:
+                    from:
+                        - !php/const App\Workflow\Status\EmployeeStatus::ACTIVE
+                    to:
+                        - !php/const App\Workflow\Status\EmployeeStatus::CHANGING_ROLE
+                !php/const App\Workflow\Transition\EmployeeTransition::ROLE_CHANGED:
+                    from:
+                        - !php/const App\Workflow\Status\EmployeeStatus::CHANGING_ROLE
+                    to:
+                        - !php/const App\Workflow\Status\EmployeeStatus::ACTIVE
+                !php/const App\Workflow\Transition\EmployeeTransition::DEACTIVATE:
+                    from:
+                        - !php/const App\Workflow\Status\EmployeeStatus::ACTIVE
+                    to:
+                        - !php/const App\Workflow\Status\EmployeeStatus::INACTIVE
+                !php/const App\Workflow\Transition\EmployeeTransition::REACTIVATE:
+                    from:
+                        - !php/const App\Workflow\Status\EmployeeStatus::INACTIVE
+                    to:
+                        - !php/const App\Workflow\Status\EmployeeStatus::ACTIVE

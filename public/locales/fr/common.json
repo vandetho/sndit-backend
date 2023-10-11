@@ -1,0 +1,17 @@
+{
+    "home": "Home",
+    "setting": "Setting",
+    "mode": "Mode",
+    "language": "Language",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Finish",
+    "reset": "Réinitialiser",
+    "name": "Nom",
+    "email": "E-mail",
+    "phone_number": "Telephone",
+    "content": "Contenu",
+    "contact": "Contact",
+    "contact_us": "Nous Contacter",
+    "send": "Envoyer"
+}

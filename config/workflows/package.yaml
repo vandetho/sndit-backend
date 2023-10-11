@@ -1,0 +1,50 @@
+framework:
+    workflows:
+        package:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type:     'method'
+                property: 'marking'
+            supports:
+                - App\Entity\Package
+            initial_marking: !php/const App\Workflow\Status\PackageStatus::NEW_PACKAGE
+            places:
+                !php/const App\Workflow\Status\PackageStatus::NEW_PACKAGE:
+                !php/const App\Workflow\Status\PackageStatus::WAITING_FOR_DELIVERY:
+                !php/const App\Workflow\Status\PackageStatus::NOTIFY_DELIVERER:
+                !php/const App\Workflow\Status\PackageStatus::ON_DELIVERY:
+                !php/const App\Workflow\Status\PackageStatus::DELIVERED_NOTIFICATION:
+                !php/const App\Workflow\Status\PackageStatus::DELIVERED:
+            transitions:
+                !php/const App\Workflow\Transition\PackageTransition::CREATE_NEW_PACKAGE:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::NEW_PACKAGE
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::WAITING_FOR_DELIVERY
+                !php/const App\Workflow\Transition\PackageTransition::GIVE_TO_DELIVERER:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::WAITING_FOR_DELIVERY
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::NOTIFY_DELIVERER
+                !php/const App\Workflow\Transition\PackageTransition::DELIVERER_NOTIFIED:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::NOTIFY_DELIVERER
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::ON_DELIVERY
+                !php/const App\Workflow\Transition\PackageTransition::TAKE_PACKAGE:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::WAITING_FOR_DELIVERY
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::ON_DELIVERY
+                !php/const App\Workflow\Transition\PackageTransition::DELIVER:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::ON_DELIVERY
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::DELIVERED_NOTIFICATION
+                !php/const App\Workflow\Transition\PackageTransition::DONE:
+                    from:
+                        - !php/const App\Workflow\Status\PackageStatus::DELIVERED_NOTIFICATION
+                    to:
+                        - !php/const App\Workflow\Status\PackageStatus::DELIVERED

@@ -1,0 +1,61 @@
+framework:
+    workflows:
+        ticket:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type:     'method'
+                property: 'marking'
+            supports:
+                - App\Entity\Ticket
+            initial_marking: !php/const App\Workflow\Status\TicketStatus::SUBMIT_TICKET
+            places:
+                !php/const App\Workflow\Status\TicketStatus::SUBMIT_TICKET:
+                !php/const App\Workflow\Status\TicketStatus::PENDING:
+                !php/const App\Workflow\Status\TicketStatus::TREATING:
+                !php/const App\Workflow\Status\TicketStatus::WAITING_FOR_FEEDBACK:
+                !php/const App\Workflow\Status\TicketStatus::REJECTED:
+                !php/const App\Workflow\Status\TicketStatus::RESOLVED:
+                !php/const App\Workflow\Status\TicketStatus::CLOSED:
+            transitions:
+                !php/const App\Workflow\Transition\TicketTransition::SUBMIT:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::SUBMIT_TICKET
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::PENDING
+                !php/const App\Workflow\Transition\TicketTransition::CLOSE:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::PENDING
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::CLOSED
+                !php/const App\Workflow\Transition\TicketTransition::TREAT:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::PENDING
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::TREATING
+                !php/const App\Workflow\Transition\TicketTransition::REJECT:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::PENDING
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::REJECTED
+                !php/const App\Workflow\Transition\TicketTransition::NEED_FEEDBACK:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::TREATING
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::WAITING_FOR_FEEDBACK
+                !php/const App\Workflow\Transition\TicketTransition::SUBMIT_FEEDBACK:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::WAITING_FOR_FEEDBACK
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::TREATING
+                !php/const App\Workflow\Transition\TicketTransition::SOLVE:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::TREATING
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::RESOLVED
+                !php/const App\Workflow\Transition\TicketTransition::CLOSE_SOLVED:
+                    from:
+                        - !php/const App\Workflow\Status\TicketStatus::RESOLVED
+                    to:
+                        - !php/const App\Workflow\Status\TicketStatus::CLOSED
