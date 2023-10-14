@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Hydrators;
 
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\AbstractHydrator as BaseAbstractHydrator;
 use Exception;
+use JsonException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
@@ -87,31 +90,46 @@ abstract class AbstractHydrator extends BaseAbstractHydrator
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @param string      $key
+     * @param mixed       $value
+     * @param string|null $dtoClass
      * @return mixed
-     * @throws Exception
+     * @throws JsonException
      */
-    protected function getValue(string $key, mixed $value): mixed
+    protected function getValue(string $key, mixed $value, string $dtoClass = null): mixed
     {
-        $finalValue = $value;
-        if ($this->_rsm->typeMappings[$key] === 'datetime' || $this->_rsm->typeMappings[$key] === 'date') {
-            $finalValue = new DateTime($value);
+        $types = $this->propertyInfo->getTypes($dtoClass, $key);
+        if (is_array($types) && count($types) > 0) {
+            if (
+                $types[0]->getBuiltinType() === Type::BUILTIN_TYPE_OBJECT
+                &&
+                in_array($types[0]->getClassName(), [
+                    DateTime::class,
+                    DateTimeImmutable::class,
+                ], true)) {
+                $class = $types[0]->getClassName();
+
+                return new $class($value);
+            }
+            if ($types[0]->getBuiltinType() === Type::BUILTIN_TYPE_ARRAY) {
+                return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+            }
         }
 
-        return $finalValue;
+        return $value;
     }
 
 
     /**
      * @inheritDoc
      * @return array
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     protected function hydrateAllData(): array
     {
         $results = [];
-        foreach($this->_stmt->fetchAllAssociative() as $row) {
+        foreach ($this->_stmt->fetchAllAssociative() as $row) {
             $this->hydrateRowData($row, $results);
         }
 
@@ -123,33 +141,51 @@ abstract class AbstractHydrator extends BaseAbstractHydrator
      * @param array $row
      * @param array $result
      * @return void
+     * @throws Exception
      */
     protected function hydrateRowData(array $row, array &$result): void
     {
         $dto = new $this->dtoClass();
+        $class = null;
         foreach ($row as $key => $value) {
             if (null !== $finalValue = $value) {
                 $properties = explode('_', $this->_rsm->getScalarAlias($key));
                 if (count($properties) > 0) {
                     if (count($properties) === 1) {
-                        $this->propertyAccessor->setValue($dto, $properties[0], $finalValue);
+                        if ($this->propertyAccessor->isWritable($dto, $properties[0])) {
+                            $finalValue = $this->getValue($properties[0], $finalValue, $this->dtoClass);
+                            $this->propertyAccessor->setValue($dto, $properties[0], $finalValue);
+                        }
                         continue;
                     }
                     $alias = [];
                     $path = '';
+                    $count = count($properties) - 1;
                     foreach ($properties as $property) {
                         $alias[] = $property;
                         $path = implode('.', $alias);
-                        $type = $this->propertyInfo->getTypes($this->dtoClass, $path);
-                        if (is_array($type)
-                            && isset($type[0])
-                            && $type[0]->getBuiltinType() === Type::BUILTIN_TYPE_OBJECT
+                        if (null === $types = $this->propertyInfo->getTypes($this->dtoClass, $path)) {
+                            $previous = $alias;
+                            unset($previous[count($alias) - 1]);
+                            if (null !== $previousType = $this->propertyInfo->getTypes($this->dtoClass, implode('.', $previous))) {
+                                $types = $this->propertyInfo->getTypes($previousType[0]->getClassName(), $property);
+                            }
+                        }
+                        if (is_array($types)
+                            && isset($types[0])
+                            && $types[0]->getBuiltinType() === Type::BUILTIN_TYPE_OBJECT
                             && $this->propertyAccessor->getValue($dto, $path) === null
+                            && !in_array($types[0]->getClassName(), [
+                                DateTimeInterface::class,
+                                DateTime::class,
+                                DateTimeImmutable::class,
+                            ], true)
                         ) {
-                            $class = $type[0]->getClassName();
+                            $class = $types[0]->getClassName();
                             $this->propertyAccessor->setValue($dto, $path, new $class());
                         }
                     }
+                    $finalValue = $this->getValue($properties[$count], $finalValue, $class);
                     $this->propertyAccessor->setValue($dto, $path, $finalValue);
                 }
             }
