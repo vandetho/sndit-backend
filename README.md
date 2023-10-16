@@ -93,9 +93,9 @@ sudo ufw app list
 ```
 
 - Among the other entries, you should see the following profiles:
-    - The Nginx **Full** profile opens both HTTPS (443) and HTTP (80) ports.
-    - The Nginx **HTTP** profile opens the HTTP (80) port only.
-    - The Nginx **HTTPS** profile opens the HTTPS (443) port only.
+  - The Nginx **Full** profile opens both HTTPS (443) and HTTP (80) ports.
+  - The Nginx **HTTP** profile opens the HTTP (80) port only.
+  - The Nginx **HTTPS** profile opens the HTTPS (443) port only.
 
 ```
 Nginx Full
