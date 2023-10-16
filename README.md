@@ -136,52 +136,6 @@ sudo rm -rf /etc/nginx/sites-enabled/default
 sudo rm -rf /etc/nginx/sites-available/default
 ```
 
-- Create a Nginx virtual host configuration file. Replace `your-domain-name.com` here is `sndit.io` with your domain
-  name.
-
-```
-sudo nano /etc/nginx/sites-available/your-domain-name.com
-```
-
-- Paste this into the file. Replace `example.com` with your domain name `sndit.io`. And replace `/path/to/web/folder` to
-  your web folder here is `/var/www/sndit`
-
-```
-server {
-
-  listen 80;
-  server_name example.com www.example.com;
-
-  root /path/to/web/folder;
-  location / {
-       try_files $uri /index.php$is_args$args;
-  }
-  location ~ ^/index\.php(/|$) {
-    fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-    fastcgi_split_path_info ^(.+\.php)(/.*)$;
-    include fastcgi_params;
-    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-    fastcgi_param DOCUMENT_ROOT $realpath_root;
-    internal;
-  }
-  location ~ \.php$ {
-    return 404;
-  }
-  error_log /var/log/nginx/example_error.log;
-  access_log /var/log/nginx/example_access.log;
-  
-}
-```
-- Enable the new Nginx configuration. Replace `example.com` with your domain name `sndit.io`.
-```
-sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/example.com
-```
-
-- Reload the Nginx service.
-```
-sudo systemctl reload nginx
-```
-
 5. Install MySQL
 - Download mysql package
 ```
@@ -263,3 +217,150 @@ Copyright (c) The PHP Group
 Zend Engine v4.2.1, Copyright (c) Zend Technologies
     with Zend OPCache v8.2.1, Copyright (c), by Zend Technologies
 ```
+
+7. Set up symfony
+
+- Update php.ini
+```
+sudo nano /etc/php/8.2/fpm/php.ini
+```
+
+- Change the following lines:
+```
+memory_limit = 256M
+cgi.fix_pathinfo = 0
+safe_mode = Off
+max_execution_time = 120
+max_input_time = 300
+date.timezone = "Asia/Phnom_Penh"
+```
+
+- Install Composer
+```
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+- Clone the repo
+```
+cd /var/www
+sudo git clone https://github.com/vandetho/sndit-backend
+```
+- Next, set proper permission on Sndit project:
+```
+sudo chown -R www-data: /var/www/sndit-backend
+```
+
+- Install vendor
+```
+composer install --no-dev --optimize-autoloader
+```
+
+- Creating local environment
+```
+cp .env .env.local
+composer dump-env prod
+```
+
+- Install migration
+```
+php bin/console doctrine:migerations:migrate 
+```
+
+- Create a Nginx virtual host configuration file. Replace `sndit.io` with your domain
+  name.
+
+```
+sudo nano /etc/nginx/sites-available/sndit.io
+```
+
+- Paste this into the file. Replace `sndit.io` with your domain name.
+
+```
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name sndit.io;
+    root /var/www/sndit-backend/public;
+    index index.php;
+    client_max_body_size 100m;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php {
+        try_files $uri /index.php =404;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_index index.php;
+        include fastcgi_params;
+      }
+
+    location ~ /\.(?:ht|git|svn) {
+        deny all;
+    }
+}
+```
+- Check Nginx for any syntax error with the following command
+```
+sudo nginx -t
+```
+
+- Enable the new Nginx configuration. Replace `sndit.io` with your domain name.
+```
+sudo ln -s /etc/nginx/sites-available/sndit.io /etc/nginx/sites-enabled/sndit.io
+```
+
+- Reload the Nginx service and PHP-FPM.
+```
+sudo systemctl restart nginx
+sudo systemctl restart php8.2-fpm
+```
+7. Install SSL for free
+For this step, We will use `certbot`.
+
+Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
+
+For more information: https://certbot.eff.org/
+
+- Install snapd
+```
+sudo apt update
+sudo apt install snapd
+```
+
+- Install the `core` snap in order to get the latest `snapd`.
+```
+sudo snap install core
+```
+
+- Install certbot
+```
+sudo snap install --classic certbot
+```
+
+- Prepare the Certbot command
+```
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+```
+- Choose how you'd like to run Certbot
+  
+Either get and install your certificates...
+```
+sudo certbot certonly --nginx
+```
+Or, just get a certificate
+```
+sudo certbot certonly --nginx
+```
+- Test automatic renewal
+```
+sudo certbot renew --dry-run
+```
+- The command to renew certbot is installed in one of the following locations:
+   - `/etc/crontab/`
+   - `/etc/cron.*/*`
+   - `systemctl list-timers`
