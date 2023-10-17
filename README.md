@@ -21,6 +21,14 @@ This section will provide you the visual representation of the relationships amo
 
 Coming Soon...
 
+## Workflows
+
+- Below is the package tracking workflow
+![package.svg](workflows%2Fpackage.svg)
+
+- Below is the helpdesk ticketing workflow
+![ticket.svg](workflows%2Fticket.svg)
+
 ## How To Use This Package:
 
 In this section, you will know how to install and you this package.
