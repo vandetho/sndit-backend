@@ -59,11 +59,70 @@ sudo apt install wget
 - Install the Nginx web server.
 
 ```
-sudo apt-get install nginx -y
+sudo apt install build-essential libpcre3-dev libssl-dev zlib1g-dev libgd-dev
+wget https://nginx.org/download/nginx-1.25.1.tar.gz
+tar -xzvf nginx-1.25.1.tar.gz
+cd nginx-1.25.1
+./configure --prefix=/var/www/html --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --with-pcre  --lock-path=/var/lock/nginx.lock --pid-path=/var/run/nginx.pid --with-http_ssl_module --with-http_image_filter_module=dynamic --modules-path=/etc/nginx/modules --with-http_v2_module --with-http_v3_module --with-stream=dynamic --with-http_addition_module --with-http_mp4_module
+```
+
+Here’s what the options mean:
+  - --prefix=/var/www/html: Sets the root directory for the install.
+  - --sbin-path=/usr/sbin/nginx: Sets where the nginx program goes.
+  - --conf-path=/etc/nginx/nginx.conf: Chooses the main NGINX configuration file location.
+  - --http-log-path=/var/log/nginx/access.log and --error-log-path=/var/log/nginx/error.log: Define where the log files are.
+  - --with-pcre: Turns on PCRE (Perl Compatible Regular Expressions) for configuration files.
+  - --lock-path=/var/lock/nginx.lock and --pid-path=/var/run/nginx.pid: Set locations for the lock and pid files.
+  - --with-http_ssl_module: Activates the SSL module for secure web connections.
+  - --with-http_image_filter_module=dynamic: Turns on the image filter module.
+  - --modules-path=/etc/nginx/modules: Defines where dynamic modules go.
+  - --with-http_v2_module: Turns on the HTTP/2 module.
+  - --with-stream=dynamic: Dynamically activates the stream module.
+  - --with-http_addition_module and --with-http_mp4_module: Turn on the addition and MP4 modules.
+
+If you don’t want to use the HTTP/3 module, just leave out --with-http_v3_module. HTTP/3 offers faster, more reliable web browsing.
+
+After configuring the options for building NGINX from the source, it’s time to compile and install NGINX. This is a two-step process:
+
+First, the make command compiles the NGINX source code using the options specified in the ./configure script. This creates the NGINX binary executable:
+
+```
+make
+sudo make install
 ```
 
 - Start the Nginx service.
+Create a new systemd service file:
 
+```
+sudo nano /etc/systemd/system/nginx.service
+```
+Add the following lines:
+```
+[Unit]
+Description=The NGINX HTTP and reverse proxy server
+After=syslog.target network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -t
+ExecStart=/usr/sbin/nginx
+ExecReload=/usr/sbin/nginx -s reload
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Reload daemon
+```
+sudo systemctl daemon-reload
+```
+
+Start nginx service
 ```
 sudo systemctl start nginx
 ```
@@ -83,7 +142,7 @@ sudo nginx -v
 - You should see output like this:
 
 ```
-nginx version: nginx/1.25.0
+nginx version: nginx/1.25.1
 ```
 
 3. Configure the Firewall
@@ -116,6 +175,13 @@ Nginx HTTPS
 
 ```
 sudo ufw allow 'Nginx Full'
+sudo ufw allow 'OpenSSH'
+sudo ufw allow 'SSH'
+```
+
+To activate ufw
+```
+sudo ufw enable
 ```
 
 - Check the Firewall status.
@@ -129,10 +195,14 @@ sudo ufw status
 ```
 To                         Action      From
 --                         ------      ----
-22                         ALLOW       Anywhere
 Nginx Full                 ALLOW       Anywhere
-22 (v6)                    ALLOW       Anywhere (v6)
+SSH                        ALLOW       Anywhere
+OpenSSH                    ALLOW       Anywhere
+22                         ALLOW       Anywhere
 Nginx Full (v6)            ALLOW       Anywhere (v6)
+SSH (v6)                   ALLOW       Anywhere (v6)
+OpenSSH (v6)               ALLOW       Anywhere (v6)
+22 (v6)                    ALLOW       Anywhere (v6)
 ```
 
 4. Create an Nginx Virtual Host
@@ -144,15 +214,15 @@ sudo rm -rf /etc/nginx/sites-enabled/default
 sudo rm -rf /etc/nginx/sites-available/default
 ```
 
-5. Install MySQL
+5. Install MySQL 8
 - Download mysql package
 ```
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.25-1_all.deb
 ```
 
 - Install the release package.
 ```
-sudo apt install ./mysql-apt-config_0.8.22-1_all.deb
+sudo apt install ./mysql-apt-config_0.8.25-1_all.deb
 ```
 
 - Now you can install MySQL.
@@ -190,7 +260,7 @@ Feb 02 06:12:30 demo systemd[1]: Started MySQL Community Server.
 sudo mysql_secure_installation
 ```
 
-6. Install PHP
+6. Install PHP 8.2
 
 - After updating packages, now install the dependencies:
 ```
@@ -210,7 +280,7 @@ sudo apt update
 
 - Install PHP 8.2
 ```
-sudo apt install php8.2 php8.2-cli php8.2-mbstring php8.2-xml php8.2-mysql php8.2-common php8.2-curl php8.2-intl php8.2-curl php8.2-zip php8.2-fpm
+sudo apt install php8.2 php8.2-cli php8.2-mbstring php8.2-xml php8.2-mysql php8.2-common php8.2-curl php8.2-intl php8.2-curl php8.2-zip php8.2-fpm php8.2-gd php8.2-imagick
 ```
 
 - Checking php version
@@ -220,10 +290,10 @@ php -v
 ```
 Output
 ----------
-PHP 8.2.1 (cli) (built: Jan 13 2023 10:43:08) (NTS)
+PHP 8.2.12 (cli) (built: Jan 13 2023 10:43:08) (NTS)
 Copyright (c) The PHP Group
-Zend Engine v4.2.1, Copyright (c) Zend Technologies
-    with Zend OPCache v8.2.1, Copyright (c), by Zend Technologies
+Zend Engine v4.2.12, Copyright (c) Zend Technologies
+    with Zend OPCache v8.2.12, Copyright (c), by Zend Technologies
 ```
 
 7. Set up symfony
@@ -245,7 +315,12 @@ date.timezone = "Asia/Phnom_Penh"
 
 - Install Composer
 ```
-curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+sudo curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+- Install Git
+```
+sudo apt install git
 ```
 
 - Clone the repo
@@ -258,20 +333,36 @@ sudo git clone https://github.com/vandetho/sndit-backend
 sudo chown -R www-data: /var/www/sndit-backend
 ```
 
-- Install vendor
-```
-composer install --no-dev --optimize-autoloader
-```
-
 - Creating local environment
 ```
-cp .env .env.local
-composer dump-env prod
+sudo cp .env .env.local
+```
+
+- Update the environments file to fit your settings and change
+```
+APP_ENV=prod
+```
+
+- Install vendor
+```
+sudo composer install --no-dev --optimize-autoloader
+```
+
+- Generate it php file to speed up it performance
+```
+sudo composer dump-env prod
 ```
 
 - Install migration
 ```
-php bin/console doctrine:migerations:migrate 
+sudo php bin/console doctrine:migrations:migrate 
+```
+
+- Build our interface
+Refer to this https://github.com/nodesource/distributions#debian-versions for install nodejs and npm
+```
+sudo npm ci
+sudo npm run build
 ```
 
 - Create a Nginx virtual host configuration file. Replace `sndit.io` with your domain
