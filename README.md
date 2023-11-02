@@ -455,6 +455,15 @@ sudo certbot --nginx
 ```
 sudo certbot renew --dry-run
 ```
+Automatically Renew Let’s Encrypt Certificates
+```
+sudo apt install cron
+crontab -e
+```
+Add the certbot command to run daily. The line below indicate that the command renew is running daily at noon
+```
+0 12 * * * /usr/bin/certbot renew --quiet
+```
 - The command to renew certbot is installed in one of the following locations:
    - `/etc/crontab/`
    - `/etc/cron.*/*`
