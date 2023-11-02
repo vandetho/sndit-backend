@@ -1,18 +1,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    Typography,
-    useMediaQuery,
-} from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography, useMediaQuery, } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { FreeMode, Keyboard, Mousewheel, Navigation, Pagination, Thumbs } from 'swiper';
 import 'swiper/css/bundle';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -21,6 +10,7 @@ import 'swiper/css/effect-coverflow';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { Keyboard, Mousewheel, Navigation, Pagination } from 'swiper/modules';
 
 interface LightboxProps {
     isVisible: boolean;

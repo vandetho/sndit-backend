@@ -4,7 +4,8 @@ import { Theme, Typography, useMediaQuery } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import { useTranslation } from 'react-i18next';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import SwiperCore, { EffectCoverflow, Navigation, Pagination } from 'swiper';
+import SwiperCore from 'swiper';
+import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import Employees from '@images/gallery/screenshot - employees.png';
 import GiveTake from '@images/gallery/screenshot - give take.png';
 import HomePage from '@images/gallery/screenshot - home page.png';
@@ -32,7 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 SwiperCore.use([Navigation, Pagination, EffectCoverflow]);
 
-interface AppGalleryProps {}
+interface AppGalleryProps {
+}
 
 const items = [HomePage, NewPackage, Packages, Package, GiveTake, Map, Company, Employees, Template];
 
@@ -63,7 +65,7 @@ const AppGalleryComponent: React.FunctionComponent<AppGalleryProps> = () => {
             >
                 {items.map((item, i) => (
                     <SwiperSlide key={`app-gallery-item-${i}`}>
-                        <img src={item} alt="Sndit App Image" style={{ width: 250 }} />
+                        <img src={item} alt="Sndit App Image" style={{ width: 250 }}/>
                     </SwiperSlide>
                 ))}
             </Swiper>

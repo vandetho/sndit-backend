@@ -449,11 +449,7 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
   
 Either get and install your certificates...
 ```
-sudo certbot certonly --nginx
-```
-Or, just get a certificate
-```
-sudo certbot certonly --nginx
+sudo certbot --nginx
 ```
 - Test automatic renewal
 ```
