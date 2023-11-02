@@ -24,14 +24,14 @@ Coming Soon...
 ## Workflows
 
 - Below is the package tracking workflow
-![package.svg](workflows%2Fpackage.svg)
+![package.svg](workflows/package.svg)
 
 - Below is the helpdesk ticketing workflow
-![ticket.svg](workflows%2Fticket.svg)
+![ticket.svg](workflows/ticket.svg)
 
 ## How To Use This Package:
 
-In this section, you will know how to install and you this package.
+In this section, you will know how to install and use this package.
 
 ### Debian :
 
@@ -83,7 +83,7 @@ sudo nginx -v
 - You should see output like this:
 
 ```
-nginx version: nginx/1.18.0
+nginx version: nginx/1.25.0
 ```
 
 3. Configure the Firewall
