@@ -361,7 +361,7 @@ sudo php bin/console doctrine:migrations:migrate
 - Build our interface
 Refer to this https://github.com/nodesource/distributions#debian-versions for install nodejs and npm
 ```
-sudo npm ci
+sudo npm install --legacy-peer-deps
 sudo npm run build
 ```
 
