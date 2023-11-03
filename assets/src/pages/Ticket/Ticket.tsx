@@ -5,7 +5,7 @@ import { ResponseSuccess, Ticket, TicketMessage } from '@interfaces';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { axios } from '@utils';
-import Lottie from 'react-lottie';
+import Lottie from 'lottie-react';
 import { TicketDetail, TicketMessages } from './components';
 import { Helmet } from 'react-helmet';
 import Lottie404 from '@lotties/404.json';
@@ -124,13 +124,11 @@ const Ticket = React.memo<TicketProps>(() => {
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                     <Lottie
-                        options={{
-                            loop: true,
-                            autoplay: true,
-                            animationData: Lottie404,
-                            rendererSettings: {
-                                preserveAspectRatio: 'xMidYMid slice',
-                            },
+                        loop
+                        animationData={Lottie404}
+                        autoplay
+                        rendererSettings={{
+                            preserveAspectRatio: 'xMidYMid slice',
                         }}
                         height={400}
                         width={400}
