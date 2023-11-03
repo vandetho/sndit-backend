@@ -10,7 +10,6 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 Encore.setOutputPath('public/build/')
     .setPublicPath('/build')
     .setManifestKeyPrefix('build/')
-
     .addEntry('sndit_app', './assets/src/Application.tsx')
     .splitEntryChunks()
     .configureSplitChunks(function (splitChunks) {
