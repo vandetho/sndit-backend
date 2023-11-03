@@ -24,7 +24,7 @@ sudo ufw allow 443/udp
 sudo ufw reload
 ```
 
-Check if the port is allow:
+Check if the port is allowed:
 ```
 sudo ufw status
 Status: active
