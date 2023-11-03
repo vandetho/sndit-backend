@@ -119,7 +119,6 @@ class CompanyControllerTest extends AbstractWebTestCase
                 $user->setFirstName($this->faker->firstName());
                 $user->setLastName($this->faker->lastName());
                 $user->setPhoneNumber('85578377799');
-                $user->setMarking(['active' => 1]);
                 $user->setToken(TokenGenerator::generate(['symbols' => false, 'length' => 32]));
                 $this->userRepository->save($user);
             }
