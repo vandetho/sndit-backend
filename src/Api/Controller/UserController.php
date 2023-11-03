@@ -125,7 +125,7 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        if ($user->isDeleting()) {
+        if (!$user->isDeleting()) {
             $date = new DateTimeImmutable();
             $user->setDeletedAt($date->add(new DateInterval('P14D')));
             $this->userRepository->update($user);

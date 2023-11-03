@@ -33,12 +33,12 @@ class MoviderOTP
     /**
      * MoviderOTP constructor.
      *
-     * @param string $moviderApiKey
-     * @param string $moviderApiSecret
+     * @param string|null $moviderApiKey
+     * @param string|null $moviderApiSecret
      */
     public function __construct(
-        private readonly string $moviderApiKey,
-        private readonly string $moviderApiSecret
+        private readonly ?string $moviderApiKey = null,
+        private readonly ?string $moviderApiSecret = null
     ) {
         $this->client = new Client();
     }
@@ -48,7 +48,7 @@ class MoviderOTP
      */
     public function isEnabled(): bool
     {
-        return isset($this->moviderApiKey) && isset($this->moviderApiSecret);
+        return !!$this->moviderApiKey && !!$this->moviderApiSecret;
     }
 
     /**

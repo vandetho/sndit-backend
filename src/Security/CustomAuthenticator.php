@@ -16,6 +16,8 @@ use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +58,8 @@ class CustomAuthenticator extends AbstractAuthenticator
         private readonly JWTTokenManagerInterface $JWTTokenManager,
         private readonly RefreshTokenGeneratorInterface $refreshTokenGenerator,
         private readonly AuthenticationSuccessHandlerInterface $successHandler,
-        private readonly int $refreshTokenTtl
+        private readonly int $refreshTokenTtl,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -85,6 +88,7 @@ class CustomAuthenticator extends AbstractAuthenticator
             $user->setPhoneNumber($credentials['phoneNumber']);
             $user->setCountryCode($credentials['countryCode']);
             $user->setToken(TokenGenerator::generate(['symbols' => false, 'length' => 32]));
+            $this->logger->debug(sprintf("Is movider enabled: %s", $this->moviderOTP->isEnabled()));
             if (!$this->moviderOTP->isEnabled()) {
                 $user->setVerified(true);
             }
@@ -123,11 +127,13 @@ class CustomAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        /** @var User $user */
-        $user = $token->getUser();
-        $this->createLastLogin($user, $request->getClientIp());
-        $this->sendOTP($user);
-        $this->userRepository->save($user);
+        if ($this->moviderOTP->isEnabled()) {
+            /** @var User $user */
+            $user = $token->getUser();
+            $this->createLastLogin($user, $request->getClientIp());
+            $this->sendOTP($user);
+            $this->userRepository->save($user);
+        }
 
         return $this->successHandler?->onAuthenticationSuccess($request, $token);
 
