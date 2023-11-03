@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Button, Link, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
+import { AppBar, Button, IconButton, Link, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
@@ -10,6 +10,7 @@ import { faCog, faEnvelope, faHome, faMapLocationDot } from '@fortawesome/free-s
 import { useModalState } from '@hooks';
 import { Drawer } from './components';
 import Logo from '@images/white_logo_with_text.png';
+import { GitHub } from '@mui/icons-material';
 
 const PREFIX = 'Topbar';
 
@@ -93,6 +94,9 @@ const Topbar: React.FC<TopbarProps> = (props) => {
                         <img src={Logo} alt="Sndit" className={classes.logoImage} />
                     </Link>
                     <div className={classes.flexGrow} />
+                    <IconButton component="a" href="https://github.com/vandetho/sndit-backend.git">
+                        <GitHub />
+                    </IconButton>
                     <Button color="inherit" component={RouterLink} to="/" startIcon={<FontAwesomeIcon icon={faHome} />}>
                         {isMobile ? '' : t('home')}
                     </Button>

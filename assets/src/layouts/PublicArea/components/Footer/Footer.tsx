@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
 import { CURRENT_YEAR } from '@config';
 import { gradients } from '@utils';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faHome, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import Logo from '@images/white_logo_with_text.png';
+import { GitHub } from '@mui/icons-material';
 
 const PREFIX = 'Footer';
 
@@ -83,6 +84,22 @@ const Footer: React.FC<FooterProps> = (props) => {
                         >
                             {t('contact_us')}
                         </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Stack direction="row" justifyContent="space-between">
+                            <IconButton component="a" href="https://github.com/vandetho/sndit-backend.git">
+                                <GitHub />
+                            </IconButton>
+                            <Stack spacing={1}>
+                                <Typography variant="h6">Sponsored By: </Typography>
+                                <Link href="https://kromb.io">
+                                    <img
+                                        src={require('@images/kromb_logo.png')}
+                                        alt="kromb is a team management system"
+                                    />
+                                </Link>
+                            </Stack>
+                        </Stack>
                     </Grid>
                 </Grid>
                 <Grid item lg={4} md={6}>
