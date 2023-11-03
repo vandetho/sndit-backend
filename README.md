@@ -35,4 +35,4 @@ For usage documentation, see:
 
 [Installation](docs/installation.md)
 
-See the bundled [LICENSE](https://github.com/vandetho/sndit-backend/blob/main/LICENSE) file.
+See the bundled [LICENSE](LICENSE) file.

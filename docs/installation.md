@@ -327,6 +327,11 @@ sudo composer dump-env prod
 sudo php bin/console doctrine:migrations:migrate 
 ```
 
+- Generate the SSL keys for JWT
+```
+sudo php bin/console lexik:jwt:generate-keypair
+```
+
 - Build our interface
   Refer to this https://github.com/nodesource/distributions#debian-versions for install nodejs and npm
 ```
