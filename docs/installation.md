@@ -322,14 +322,9 @@ sudo composer install --no-dev --optimize-autoloader
 sudo composer dump-env prod
 ```
 
-- Install migration
+- Install our application
 ```
-sudo php bin/console doctrine:migrations:migrate 
-```
-
-- Generate the SSL keys for JWT
-```
-sudo php bin/console lexik:jwt:generate-keypair
+sudo php bin/console sndit:install
 ```
 
 - Build our interface

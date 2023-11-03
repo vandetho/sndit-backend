@@ -8,6 +8,7 @@ namespace App\Command;
 
 use Doctrine\Migrations\Tools\Console\Command\MigrateCommand;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Command\GenerateKeyPairCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\ExceptionInterface;
@@ -40,9 +41,11 @@ class InstallationCommand extends Command
     {
         $migrationCommand = $this->getApplication()?->find('doctrine:'.MigrateCommand::getDefaultName());
         $citiesCommand = $this->getApplication()?->find(UpdateCitiesCommand::getDefaultName());
+        $jwtLexikCommand = $this->getApplication()?->find(GenerateKeyPairCommand::getDefaultName());
 
         $migrationCommand->run($input, $output);
         $citiesCommand->run($input, $output);
+        $jwtLexikCommand->run($input, $output);
 
         return Command::SUCCESS;
     }

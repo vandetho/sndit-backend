@@ -85,7 +85,7 @@ class CustomAuthenticator extends AbstractAuthenticator
             $user->setPhoneNumber($credentials['phoneNumber']);
             $user->setCountryCode($credentials['countryCode']);
             $user->setToken(TokenGenerator::generate(['symbols' => false, 'length' => 32]));
-            if ($this->moviderOTP->isEnabled()) {
+            if (!$this->moviderOTP->isEnabled()) {
                 $user->setVerified(true);
             }
             $this->userRepository->updateUser($user);
