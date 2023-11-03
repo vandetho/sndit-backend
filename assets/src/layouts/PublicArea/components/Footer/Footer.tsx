@@ -1,7 +1,7 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
-import makeStyles from '@mui/styles/makeStyles';
-import { Button, Grid, Theme, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { CURRENT_YEAR } from '@config';
 import { gradients } from '@utils';
 import { useTranslation } from 'react-i18next';
@@ -10,8 +10,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faHome, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import Logo from '@images/white_logo_with_text.png';
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
+const PREFIX = 'Footer';
+
+const classes = {
+    root: `${PREFIX}-root`,
+    container: `${PREFIX}-container`,
+    logoImage: `${PREFIX}-logoImage`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.root}`]: {
         marginTop: 'auto',
         height: 200,
         background: gradients.primary,
@@ -20,8 +28,10 @@ const useStyles = makeStyles((theme: Theme) => ({
             height: 400,
         },
     },
-    container: {},
-    logoImage: {
+
+    [`& .${classes.container}`]: {},
+
+    [`& .${classes.logoImage}`]: {
         alignContent: 'center',
         height: 64,
         [theme.breakpoints.down('md')]: {
@@ -37,10 +47,9 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = (props) => {
     const { className, ...rest } = props;
     const { t } = useTranslation();
-    const classes = useStyles();
 
     return (
-        <div {...rest} className={clsx(classes.root, className)}>
+        <Root {...rest} className={clsx(classes.root, className)}>
             <Grid container spacing={2} className={classes.container}>
                 <Grid item lg={4} md={6}>
                     <img src={Logo} className={classes.logoImage} alt="Sndit" />
@@ -90,7 +99,7 @@ const Footer: React.FC<FooterProps> = (props) => {
                     <Typography variant="body1">{CURRENT_YEAR} &copy; Sndit All Right reserved</Typography>
                 </Grid>
             </Grid>
-        </div>
+        </Root>
     );
 };
 

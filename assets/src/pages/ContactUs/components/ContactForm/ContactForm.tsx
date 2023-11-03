@@ -1,18 +1,22 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import { Button, CircularProgress, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createStyles, makeStyles } from '@mui/styles';
 import { axios } from '@utils';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { ResponseSuccess, Ticket } from '@interfaces';
 import { useAlert } from '@hooks';
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        button: { marginTop: 20 },
-    }),
-);
+const PREFIX = 'ContactForm';
+
+const classes = {
+    button: `${PREFIX}-button`,
+};
+
+const Root = styled('div')(() => ({
+    [`& .${classes.button}`]: { marginTop: 20 },
+}));
 
 const DEFAULT_VALUE = {
     name: '',
@@ -32,7 +36,7 @@ interface ContactFormProps {
 
 const ContactForm = React.memo<ContactFormProps>(({ onSubmit }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
+
     const { setAlert, AlertMessage } = useAlert();
     const [state, setState] = React.useState(DEFAULT_VALUE);
 
@@ -107,7 +111,7 @@ const ContactForm = React.memo<ContactFormProps>(({ onSubmit }) => {
     }, [isFormValid, onSubmit, setAlert, state.content, state.email, state.name, state.phoneNumber]);
 
     return (
-        <React.Fragment>
+        <Root>
             <div data-aos="fade-right">
                 <TextField
                     fullWidth
@@ -163,7 +167,7 @@ const ContactForm = React.memo<ContactFormProps>(({ onSubmit }) => {
                 </Button>
             </div>
             <AlertMessage />
-        </React.Fragment>
+        </Root>
     );
 });
 

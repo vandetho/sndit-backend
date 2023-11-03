@@ -1,33 +1,35 @@
 import React from 'react';
-import { Box, Button, Grid, Step, StepLabel, Stepper, Theme, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
+import { Box, Button, Grid, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            margin: '0 auto',
-            paddingTop: 125,
-            paddingBottom: 125,
-            [theme.breakpoints.down('md')]: {
-                paddingTop: 71,
-            },
-            [theme.breakpoints.up('md')]: {
-                width: theme.breakpoints.values.md,
-                paddingTop: 71,
-            },
-            [theme.breakpoints.up('lg')]: {
-                width: theme.breakpoints.values.lg,
-            },
+const PREFIX = 'PackageTimeline';
+
+const classes = {
+    container: `${PREFIX}-container`,
+};
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+    [`&.${classes.container}`]: {
+        margin: '0 auto',
+        paddingTop: 125,
+        paddingBottom: 125,
+        [theme.breakpoints.down('md')]: {
+            paddingTop: 71,
         },
-    }),
-);
+        [theme.breakpoints.up('md')]: {
+            width: theme.breakpoints.values.md,
+            paddingTop: 71,
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: theme.breakpoints.values.lg,
+        },
+    },
+}));
 
 interface PackageTimelineProps {}
 
 const PackageTimeline = React.memo<PackageTimelineProps>(() => {
-    const classes = useStyles();
     const { t } = useTranslation();
     const [activeStep, setActiveStep] = React.useState(0);
 
@@ -75,7 +77,7 @@ const PackageTimeline = React.memo<PackageTimelineProps>(() => {
     }, [activeStep, t]);
 
     return (
-        <Grid container className={classes.container}>
+        <StyledGrid container className={classes.container}>
             <Grid item md={12}>
                 <div data-aos="fade-down">
                     <Box
@@ -130,7 +132,7 @@ const PackageTimeline = React.memo<PackageTimelineProps>(() => {
                     )}
                 </div>
             </Grid>
-        </Grid>
+        </StyledGrid>
     );
 });
 

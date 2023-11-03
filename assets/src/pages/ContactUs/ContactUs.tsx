@@ -1,41 +1,45 @@
 import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import { Alert, AlertTitle, Grid, Link, Stack, useMediaQuery } from '@mui/material';
 import { ContactForm, Information } from './components';
-import { createStyles, makeStyles } from '@mui/styles';
-import { Theme, useTheme } from '@mui/material/styles';
 import { Trans, useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { Ticket } from '@interfaces';
 import { useNavigate } from 'react-router';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            margin: '0 auto',
-            paddingTop: 125,
-            paddingBottom: 125,
-            [theme.breakpoints.down('lg')]: {
-                paddingTop: 71,
-                paddingLeft: 20,
-                paddingRight: 20,
-            },
-            [theme.breakpoints.up('lg')]: {
-                width: theme.breakpoints.values.md,
-            },
-            [theme.breakpoints.up('xl')]: {
-                width: theme.breakpoints.values.lg,
-            },
+const PREFIX = 'ContactUs';
+
+const classes = {
+    container: `${PREFIX}-container`,
+    link: `${PREFIX}-link`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`& .${classes.container}`]: {
+        margin: '0 auto',
+        paddingTop: 125,
+        paddingBottom: 125,
+        [theme.breakpoints.down('lg')]: {
+            paddingTop: 71,
+            paddingLeft: 20,
+            paddingRight: 20,
         },
-        link: {
-            cursor: 'pointer',
+        [theme.breakpoints.up('lg')]: {
+            width: theme.breakpoints.values.md,
         },
-    }),
-);
+        [theme.breakpoints.up('xl')]: {
+            width: theme.breakpoints.values.lg,
+        },
+    },
+
+    [`& .${classes.link}`]: {
+        cursor: 'pointer',
+    },
+}));
 
 interface ContactUsProps {}
 
 const ContactUs = React.memo<ContactUsProps>(() => {
-    const classes = useStyles();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [ticket, setTicket] = React.useState<Ticket | undefined>(undefined);
@@ -63,10 +67,10 @@ const ContactUs = React.memo<ContactUsProps>(() => {
             );
         }
         return null;
-    }, [ticket, t, classes.link, onClick]);
+    }, [ticket, t, onClick]);
 
     return (
-        <React.Fragment>
+        <Root>
             <Helmet>
                 <title>{t('contact_us_page_title', { ns: 'glossary' })}</title>
             </Helmet>
@@ -82,7 +86,7 @@ const ContactUs = React.memo<ContactUsProps>(() => {
                     <Information />
                 </Grid>
             </Grid>
-        </React.Fragment>
+        </Root>
     );
 });
 

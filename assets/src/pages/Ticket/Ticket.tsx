@@ -1,44 +1,47 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import { useLocation, useParams } from 'react-router';
 import { ResponseSuccess, Ticket, TicketMessage } from '@interfaces';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { axios } from '@utils';
-import { createStyles, makeStyles } from '@mui/styles';
 import Lottie from 'react-lottie';
-import { Theme } from '@mui/material/styles';
 import { TicketDetail, TicketMessages } from './components';
 import { Helmet } from 'react-helmet';
 import Lottie404 from '@lotties/404.json';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            margin: '0 auto',
-            paddingTop: 125,
-            paddingBottom: 125,
-            [theme.breakpoints.down('lg')]: {
-                paddingTop: 71,
-                paddingLeft: 20,
-                paddingRight: 20,
-            },
-            [theme.breakpoints.up('lg')]: {
-                width: theme.breakpoints.values.md,
-            },
-            [theme.breakpoints.up('xl')]: {
-                width: theme.breakpoints.values.lg,
-            },
+const PREFIX = 'Ticket';
+
+const classes = {
+    container: `${PREFIX}-container`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`& .${classes.container}`]: {
+        margin: '0 auto',
+        paddingTop: 125,
+        paddingBottom: 125,
+        [theme.breakpoints.down('lg')]: {
+            paddingTop: 71,
+            paddingLeft: 20,
+            paddingRight: 20,
         },
-    }),
-);
+        [theme.breakpoints.up('lg')]: {
+            width: theme.breakpoints.values.md,
+        },
+        [theme.breakpoints.up('xl')]: {
+            width: theme.breakpoints.values.lg,
+        },
+    },
+}));
 
 interface TicketProps {}
 
 const Ticket = React.memo<TicketProps>(() => {
     const { t } = useTranslation();
     const location = useLocation();
-    const classes = useStyles();
-    const { token } = useParams<{ token }>();
+
+    const { token } = useParams<{ token: string }>();
     const [state, setState] = React.useState<{
         isLoading: boolean;
         ticket: Ticket | undefined;
@@ -141,7 +144,7 @@ const Ticket = React.memo<TicketProps>(() => {
     }, [onSubmit, state.isLoading, state.ticket, t]);
 
     return (
-        <React.Fragment>
+        <Root>
             <Helmet>
                 <title>{t('ticket_page_title', { ns: 'glossary', token })}</title>
             </Helmet>
@@ -149,7 +152,7 @@ const Ticket = React.memo<TicketProps>(() => {
                 {renderContent()}
                 <TicketMessages messages={state.messages} />
             </Grid>
-        </React.Fragment>
+        </Root>
     );
 });
 

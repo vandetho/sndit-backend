@@ -1,20 +1,27 @@
 import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from '@mui/material';
-import { Theme, useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import { Outlet } from 'react-router';
 import { Footer, Topbar } from './components';
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
+const PREFIX = 'PublicArea';
+
+const classes = {
+    root: `${PREFIX}-root`,
+    content: `${PREFIX}-content`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.root}`]: {
         height: '100%',
         zIndex: 1,
         [theme.breakpoints.down('md')]: {
             height: 64,
         },
     },
-    content: {},
+
+    [`& .${classes.content}`]: {},
 }));
 
 interface PublicAreaProps {
@@ -23,12 +30,11 @@ interface PublicAreaProps {
 }
 
 const PublicArea: React.FC<PublicAreaProps> = () => {
-    const classes = useStyles();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <div
+        <Root
             className={clsx({
                 [classes.root]: true,
             })}
@@ -39,7 +45,7 @@ const PublicArea: React.FC<PublicAreaProps> = () => {
                 <Outlet />
             </main>
             <Footer />
-        </div>
+        </Root>
     );
 };
 

@@ -1,59 +1,72 @@
 import React from 'react';
-import { Grid, Theme, Typography } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
+import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressBook, faMapLocationDot, faQrcode, faStore } from '@fortawesome/free-solid-svg-icons';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        mainContainer: {
-            backgroundColor: theme.palette.divider,
+const PREFIX = 'KeyFeatures';
+
+const classes = {
+    mainContainer: `${PREFIX}-mainContainer`,
+    container: `${PREFIX}-container`,
+    boxContainer: `${PREFIX}-boxContainer`,
+    boxIconContainer: `${PREFIX}-boxIconContainer`,
+    boxIcon: `${PREFIX}-boxIcon`,
+    boxTitle: `${PREFIX}-boxTitle`,
+    boxBody: `${PREFIX}-boxBody`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`&.${classes.mainContainer}`]: {
+        backgroundColor: theme.palette.divider,
+    },
+
+    [`& .${classes.container}`]: {
+        margin: '0 auto',
+        paddingTop: 125,
+        paddingBottom: 71,
+        [theme.breakpoints.down('md')]: {
+            paddingTop: 71,
+            paddingLeft: 20,
+            paddingRight: 20,
+            width: '100%',
         },
-        container: {
-            margin: '0 auto',
-            paddingTop: 125,
-            paddingBottom: 71,
-            [theme.breakpoints.down('md')]: {
-                paddingTop: 71,
-                paddingLeft: 20,
-                paddingRight: 20,
-                width: '100%',
-            },
-            [theme.breakpoints.up('md')]: {
-                paddingTop: 71,
-                width: theme.breakpoints.values.md,
-            },
-            [theme.breakpoints.up('xl')]: {
-                width: theme.breakpoints.values.lg,
-            },
+        [theme.breakpoints.up('md')]: {
+            paddingTop: 71,
+            width: theme.breakpoints.values.md,
         },
-        boxContainer: {
-            backgroundColor: theme.palette.divider,
-            margin: theme.spacing(4),
+        [theme.breakpoints.up('xl')]: {
+            width: theme.breakpoints.values.lg,
         },
-        boxIconContainer: {
-            margin: 'auto',
-        },
-        boxIcon: {
-            fontSize: 75,
-            display: 'block',
-            margin: 'auto',
-        },
-        boxTitle: { fontWeight: 'bold', padding: 5 },
-        boxBody: { padding: 5 },
-    }),
-);
+    },
+
+    [`& .${classes.boxContainer}`]: {
+        backgroundColor: theme.palette.divider,
+        margin: theme.spacing(4),
+    },
+
+    [`& .${classes.boxIconContainer}`]: {
+        margin: 'auto',
+    },
+
+    [`& .${classes.boxIcon}`]: {
+        fontSize: 75,
+        display: 'block',
+        margin: 'auto',
+    },
+
+    [`& .${classes.boxTitle}`]: { fontWeight: 'bold', padding: 5 },
+    [`& .${classes.boxBody}`]: { padding: 5 },
+}));
 
 interface KeyFeaturesProps {}
 
 const KeyFeatures = React.memo<KeyFeaturesProps>(() => {
-    const classes = useStyles();
     const { t } = useTranslation();
 
     return (
-        <div className={classes.mainContainer}>
+        <Root className={classes.mainContainer}>
             <Grid container className={classes.container}>
                 <Grid item md={12}>
                     <div data-aos="fade-right">
@@ -109,7 +122,7 @@ const KeyFeatures = React.memo<KeyFeaturesProps>(() => {
                     </Grid>
                 </Grid>
             </Grid>
-        </div>
+        </Root>
     );
 });
 

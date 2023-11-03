@@ -1,8 +1,7 @@
 import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import { Box, CircularProgress, Grid, Paper } from '@mui/material';
 import { PackageDeliveredMap, PackageDetail, PackageHistories, SearchBar } from './components';
-import { createStyles, makeStyles } from '@mui/styles';
-import { Theme, useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -10,31 +9,34 @@ import { QRCodeSVG } from 'qrcode.react';
 import { usePackageFetcher } from '@fetchers';
 import { useAlert } from '@hooks';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            margin: '0 auto',
-            paddingTop: 125,
-            paddingBottom: 125,
-            [theme.breakpoints.down('lg')]: {
-                paddingTop: 71,
-                paddingLeft: 20,
-                paddingRight: 20,
-            },
-            [theme.breakpoints.up('lg')]: {
-                width: theme.breakpoints.values.md,
-            },
-            [theme.breakpoints.up('xl')]: {
-                width: theme.breakpoints.values.lg,
-            },
+const PREFIX = 'Tracking';
+
+const classes = {
+    container: `${PREFIX}-container`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+    [`& .${classes.container}`]: {
+        margin: '0 auto',
+        paddingTop: 125,
+        paddingBottom: 125,
+        [theme.breakpoints.down('lg')]: {
+            paddingTop: 71,
+            paddingLeft: 20,
+            paddingRight: 20,
         },
-    }),
-);
+        [theme.breakpoints.up('lg')]: {
+            width: theme.breakpoints.values.md,
+        },
+        [theme.breakpoints.up('xl')]: {
+            width: theme.breakpoints.values.lg,
+        },
+    },
+}));
 
 interface TrackingProps {}
 
 const TrackingComponent: React.FunctionComponent<TrackingProps> = () => {
-    const classes = useStyles();
     const search = useLocation().search;
     const trackingNumber = new URLSearchParams(search).get('tracking_number');
     const { t } = useTranslation();
@@ -66,7 +68,7 @@ const TrackingComponent: React.FunctionComponent<TrackingProps> = () => {
         }
         if (item) {
             return (
-                <React.Fragment>
+                <Root>
                     <Grid item xs={12} md={5} container>
                         <Grid item xs={12}>
                             <PackageDetail item={item} />
@@ -96,7 +98,7 @@ const TrackingComponent: React.FunctionComponent<TrackingProps> = () => {
                     <Grid item xs={12}>
                         <PackageDeliveredMap item={item} />
                     </Grid>
-                </React.Fragment>
+                </Root>
             );
         }
 

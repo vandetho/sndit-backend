@@ -1,24 +1,27 @@
 import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import { TicketMessage } from '@interfaces';
 import { Box, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import { DATETIME_FORMAT } from '@config';
-import { useTheme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
 import { useModalState } from '@hooks';
 import { Lightbox } from './components';
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        image: {
-            cursor: 'pointer',
-            margin: 0,
-            maxHeight: 90,
-            maxWidth: 90,
-            marginLeft: 15,
-        },
-    }),
-);
+const PREFIX = 'TicketMessages';
+
+const classes = {
+    image: `${PREFIX}-image`,
+};
+
+const Root = styled('div')(() => ({
+    [`& .${classes.image}`]: {
+        cursor: 'pointer',
+        margin: 0,
+        maxHeight: 90,
+        maxWidth: 90,
+        marginLeft: 15,
+    },
+}));
 
 interface TicketMessagesProps {
     messages: TicketMessage[];
@@ -26,7 +29,7 @@ interface TicketMessagesProps {
 
 const TicketMessages = React.memo<TicketMessagesProps>(({ messages }) => {
     const theme = useTheme();
-    const classes = useStyles();
+
     const { onToggle, isOpen } = useModalState();
     const [attachments, setAttachments] = React.useState<string[]>([]);
 
@@ -57,11 +60,11 @@ const TicketMessages = React.memo<TicketMessagesProps>(({ messages }) => {
             }
             return null;
         },
-        [classes.image, onToggle],
+        [onClickImage],
     );
 
     return (
-        <React.Fragment>
+        <Root>
             <Grid container>
                 {messages.map((message, index) => {
                     const user = message.user
@@ -94,7 +97,7 @@ const TicketMessages = React.memo<TicketMessagesProps>(({ messages }) => {
                 })}
             </Grid>
             <Lightbox isVisible={isOpen} images={attachments} onClose={onToggle} />
-        </React.Fragment>
+        </Root>
     );
 });
 

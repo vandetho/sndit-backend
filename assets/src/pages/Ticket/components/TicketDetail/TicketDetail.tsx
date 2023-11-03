@@ -18,36 +18,43 @@ import { DATETIME_FORMAT } from '@config';
 import { ResponseSuccess, Ticket, TicketMessage } from '@interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faEnvelope, faImages, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { createStyles, makeStyles } from '@mui/styles';
 import { axios } from '@utils';
 import { useAlert } from '@hooks';
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        imagePreview: {
-            position: 'relative',
-            marginRight: 15,
-            fontSize: 0,
-            maxWidth: 90,
-            maxHeight: 90,
-        },
-        image: {
-            cursor: 'pointer',
-            margin: 0,
-            maxHeight: 90,
-            maxWidth: 90,
-        },
-        removeButton: {
-            position: 'absolute',
-            top: 1,
-            right: 1,
-            cursor: 'pointer',
-            background: 'hsla(0,0%,100%,.5)',
-            width: 25,
-            height: 25,
-        },
-    }),
-);
+const PREFIX = 'TicketDetail';
+
+const classes = {
+    imagePreview: `${PREFIX}-imagePreview`,
+    image: `${PREFIX}-image`,
+    removeButton: `${PREFIX}-removeButton`,
+};
+
+const Root = styled('div')(() => ({
+    [`& .${classes.imagePreview}`]: {
+        position: 'relative',
+        marginRight: 15,
+        fontSize: 0,
+        maxWidth: 90,
+        maxHeight: 90,
+    },
+
+    [`& .${classes.image}`]: {
+        cursor: 'pointer',
+        margin: 0,
+        maxHeight: 90,
+        maxWidth: 90,
+    },
+
+    [`& .${classes.removeButton}`]: {
+        position: 'absolute',
+        top: 1,
+        right: 1,
+        cursor: 'pointer',
+        background: 'hsla(0,0%,100%,.5)',
+        width: 25,
+        height: 25,
+    },
+}));
 
 const Input = styled('input')({
     display: 'none',
@@ -59,7 +66,6 @@ interface TicketDetailProps {
 }
 
 const TicketDetail = React.memo<TicketDetailProps>(({ ticket, onSubmit }) => {
-    const classes = useStyles();
     const { t } = useTranslation();
     const theme = useTheme();
     const { setAlert, AlertMessage } = useAlert();
@@ -102,7 +108,7 @@ const TicketDetail = React.memo<TicketDetailProps>(({ ticket, onSubmit }) => {
             );
         }
         return null;
-    }, [classes.image, classes.imagePreview, classes.removeButton, onRemove, state.images]);
+    }, [onRemove, state.images]);
 
     const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setState((prevState) => ({ ...prevState, message: event.target.value }));
@@ -147,7 +153,7 @@ const TicketDetail = React.memo<TicketDetailProps>(({ ticket, onSubmit }) => {
     }, [onSubmit, setAlert, state.images, state.message, ticket.token]);
 
     return (
-        <React.Fragment>
+        <Root>
             <Card sx={{ borderRadius: 5, p: 2 }}>
                 <CardHeader
                     title={ticket.name}
@@ -202,7 +208,7 @@ const TicketDetail = React.memo<TicketDetailProps>(({ ticket, onSubmit }) => {
             </Card>
             {renderFiles()}
             <AlertMessage />
-        </React.Fragment>
+        </Root>
     );
 });
 

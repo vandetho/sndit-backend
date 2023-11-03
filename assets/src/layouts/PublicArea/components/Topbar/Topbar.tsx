@@ -1,7 +1,7 @@
 import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import makeStyles from '@mui/styles/makeStyles';
-import { AppBar, Button, Link, Theme, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
+import { AppBar, Button, Link, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
@@ -9,19 +9,29 @@ import { gradients } from '@utils';
 import { faCog, faEnvelope, faHome, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { useModalState } from '@hooks';
 import { Drawer } from './components';
-import { useTheme } from '@mui/material/styles';
 import Logo from '@images/white_logo_with_text.png';
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
+const PREFIX = 'Topbar';
+
+const classes = {
+    root: `${PREFIX}-root`,
+    flexGrow: `${PREFIX}-flexGrow`,
+    toolbar: `${PREFIX}-toolbar`,
+    logoImage: `${PREFIX}-logoImage`,
+};
+
+const StyledElevationScroll = styled(ElevationScroll)(({ theme }) => ({
+    [`& .${classes.root}`]: {
         boxShadow: 'none',
         background: gradients.primary,
         border: 'none',
     },
-    flexGrow: {
+
+    [`& .${classes.flexGrow}`]: {
         flexGrow: 1,
     },
-    toolbar: {
+
+    [`& .${classes.toolbar}`]: {
         height: 80,
         [theme.breakpoints.down('lg')]: {
             height: 64,
@@ -35,7 +45,8 @@ const useStyles = makeStyles((theme: Theme) => ({
             width: theme.breakpoints.values.lg,
         },
     },
-    logoImage: {
+
+    [`& .${classes.logoImage}`]: {
         alignContent: 'center',
         height: 64,
         [theme.breakpoints.down('md')]: {
@@ -73,10 +84,9 @@ const Topbar: React.FC<TopbarProps> = (props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { isOpen, onToggle } = useModalState();
-    const classes = useStyles();
 
     return (
-        <ElevationScroll {...props}>
+        <StyledElevationScroll {...props}>
             <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
                 <Toolbar className={classes.toolbar}>
                     <Link component={RouterLink} to="/" color="inherit">
@@ -108,7 +118,7 @@ const Topbar: React.FC<TopbarProps> = (props) => {
                     <Drawer isOpen={isOpen} onToggle={onToggle} />
                 </Toolbar>
             </AppBar>
-        </ElevationScroll>
+        </StyledElevationScroll>
     );
 };
 
