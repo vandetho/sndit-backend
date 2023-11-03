@@ -16,7 +16,7 @@ jobs:
                 env:
                     MYSQL_ALLOW_EMPTY_PASSWORD: false
                     MYSQL_ROOT_PASSWORD:        ${{ secrets.MYSQL_ROOT_PASSWORD }}
-                    MYSQL_DATABASE:             ${{ secrets.MYSQL_DATABASE }}
+                    MYSQL_DATABASE:             ${{ secrets.MYSQL_DATABASE }}_test
                 ports:
                     - 3306:3306
                 options: >-
