@@ -62,16 +62,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PackageController extends AbstractController
 {
     /**
-     * @var PackageRepository
-     */
-    private PackageRepository $packageRepository;
-
-    /**
-     * @var PackageWorkflow
-     */
-    private PackageWorkflow $packageWorkflow;
-
-    /**
      * PackageController constructor.
      *
      * @param ResponseGeneratorInterface $responseGenerator
@@ -84,12 +74,10 @@ class PackageController extends AbstractController
         ResponseGeneratorInterface $responseGenerator,
         TranslatorInterface $translator,
         EventDispatcherInterface $dispatcher,
-        PackageRepository $packageRepository,
-        PackageWorkflow $packageWorkflow
+        private readonly PackageRepository $packageRepository,
+        private readonly PackageWorkflow $packageWorkflow
     ) {
         parent::__construct($responseGenerator, $translator, $dispatcher);
-        $this->packageRepository = $packageRepository;
-        $this->packageWorkflow = $packageWorkflow;
     }
 
     /**

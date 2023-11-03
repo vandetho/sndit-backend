@@ -27,4 +27,16 @@ class UserControllerTest extends AbstractWebTestCase
         self::assertFalse($response->error);
         self::assertEquals($response->message, $this->translator->trans('flash.success.user_deleted', [], 'application'));
     }
+
+    /**
+     * @throws JsonException
+     */
+    public function testUndelete(): void
+    {
+        $this->client->request('POST', '/api/users/current/undelete');
+        self::assertResponseIsSuccessful();
+        $response = json_decode($this->client->getResponse()->getContent(), false, 512, JSON_THROW_ON_ERROR);
+        self::assertFalse($response->error);
+        self::assertEquals($response->message, $this->translator->trans('flash.success.user_undeleted', [], 'application'));
+    }
 }

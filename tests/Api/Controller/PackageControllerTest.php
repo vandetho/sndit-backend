@@ -9,6 +9,7 @@ use App\Repository\PackageHistoryRepository;
 use App\Repository\PackageRepository;
 use App\Workflow\Status\PackageStatus;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use JsonException;
 
 /**
@@ -30,20 +31,14 @@ class PackageControllerTest extends AbstractWebTestCase
     private PackageRepository $packageRepository;
 
     /**
-     * @var PackageHistoryRepository
-     */
-    private PackageHistoryRepository $packageHistoryRepository;
-
-    /**
      * @return void
-     * @throws JsonException
+     * @throws Exception
      */
     protected function setUp(): void
     {
         parent::setUp();
         $this->companyRepository = self::getContainer()->get(CompanyRepository::class);
         $this->packageRepository = self::getContainer()->get(PackageRepository::class);
-        $this->packageHistoryRepository = self::getContainer()->get(PackageHistoryRepository::class);
     }
 
     /**
@@ -69,8 +64,8 @@ class PackageControllerTest extends AbstractWebTestCase
      */
     public function testGetc(): void
     {
-        if (null !== $package = $this->packageRepository->findOneBy(['id' => 3])) {
-            $this->client->request('GET', "/api/packages/{$package->getToken()}", []);
+        if (null !== $package = $this->packageRepository->findOneBy(['id' => 1])) {
+            $this->client->request('GET', "/api/packages/{$package->getToken()}");
             self::assertResponseIsSuccessful();
             $response = json_decode($this->client->getResponse()->getContent(), false, 512, JSON_THROW_ON_ERROR);
             self::assertFalse($response->error);

@@ -29,12 +29,12 @@ class PackageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [])
-            ->add('phoneNumber', TextType::class, [])
-            ->add('note', TextType::class, [])
-            ->add('address', TextType::class, [])
-            ->add('city', CityEntityType::class, [])
-            ->add('company', CompanyEntityType::class, [])
+            ->add('name', TextType::class)
+            ->add('phoneNumber', TextType::class)
+            ->add('note', TextType::class, ['required' => false])
+            ->add('address', TextType::class, ['required' => false])
+            ->add('city', CityEntityType::class)
+            ->add('company', CompanyEntityType::class)
             ->add('createTemplate', BooleanType::class, [
                 'mapped' => false
             ])
