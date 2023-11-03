@@ -29,6 +29,16 @@ class User extends AbstractEntity implements UserInterface
     /**
      * @var string|null
      */
+    #[ORM\Column(name: 'email', type: Types::STRING, unique: true, nullable: true)]
+    private ?string $email;
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(name: 'email_canonical', type: Types::STRING, unique: true, nullable: true)]
+    private ?string $emailCanonical;
+    /**
+     * @var string|null
+     */
     #[ORM\Column(name: 'phone_number', type: Types::STRING, length: 30, unique: true, nullable: false)]
     private ?string $phoneNumber;
 
@@ -122,6 +132,42 @@ class User extends AbstractEntity implements UserInterface
     #[ORM\ManyToOne(targetEntity: OTP::class)]
     #[ORM\JoinColumn(name: "last_otp_id", referencedColumnName: "id", nullable: true)]
     private ?OTP $lastOTP = null;
+
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     * @return $this
+     */
+    public function setEmail(?string $email): User
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmailCanonical(): ?string
+    {
+        return $this->emailCanonical;
+    }
+
+    /**
+     * @param string|null $emailCanonical
+     * @return $this
+     */
+    public function setEmailCanonical(?string $emailCanonical): User
+    {
+        $this->emailCanonical = $emailCanonical;
+        return $this;
+    }
 
     /**
      * @return string

@@ -57,16 +57,6 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 class UserController extends AbstractController
 {
     /**
-     * @var MoviderOTP
-     */
-    private MoviderOTP $moviderOTP;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * UserController constructor.
      *
      * @param ResponseGeneratorInterface $responseGenerator
@@ -79,12 +69,10 @@ class UserController extends AbstractController
         ResponseGeneratorInterface $responseGenerator,
         TranslatorInterface $translator,
         EventDispatcherInterface $dispatcher,
-        UserRepository $userRepository,
-        MoviderOTP $moviderOTP,
+        private readonly UserRepository $userRepository,
+        private readonly MoviderOTP $moviderOTP,
     ) {
         parent::__construct($responseGenerator, $translator, $dispatcher);
-        $this->userRepository = $userRepository;
-        $this->moviderOTP = $moviderOTP;
     }
 
     /**

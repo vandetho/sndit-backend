@@ -22,18 +22,8 @@ class MoviderOTP
     public const MOVIDER_ACKNOWLEDGE_VERIFY_URL = 'https://api.movider.co/v1/verify/acknowledge';
     public const MOVIDER_CANCEL_VERIFY_URL = 'https://api.movider.co/v1/verify/cancel';
     public const OTP_CODE_LENGTH = 6;
-    public const OTP_FROM = 'Keilla';
+    public const OTP_FROM = 'Sndit';
     public const OTP_LANGUAGE = 'en-us';
-
-    /**
-     * @var string
-     */
-    private string $moviderApiKey;
-
-    /**
-     * @var string
-     */
-    private string $moviderApiSecret;
 
     /**
      * @var Client
@@ -47,12 +37,18 @@ class MoviderOTP
      * @param string $moviderApiSecret
      */
     public function __construct(
-        string $moviderApiKey,
-        string $moviderApiSecret
+        private readonly string $moviderApiKey,
+        private readonly string $moviderApiSecret
     ) {
-        $this->moviderApiKey = $moviderApiKey;
-        $this->moviderApiSecret = $moviderApiSecret;
         $this->client = new Client();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return isset($this->moviderApiKey) && isset($this->moviderApiSecret);
     }
 
     /**

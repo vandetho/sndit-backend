@@ -36,6 +36,13 @@ class Tracking extends AbstractEntity
     private ?User $user = null;
 
     /**
+     * @var Package|null
+     */
+    #[ORM\ManyToOne(targetEntity: Package::class)]
+    #[ORM\JoinColumn(name: 'package_id', referencedColumnName: 'id')]
+    private ?Package $package = null;
+
+    /**
      * @return float|null
      */
     public function getLatitude(): ?float
@@ -89,6 +96,24 @@ class Tracking extends AbstractEntity
     {
         $this->user = $user;
 
+        return $this;
+    }
+
+    /**
+     * @return Package|null
+     */
+    public function getPackage(): ?Package
+    {
+        return $this->package;
+    }
+
+    /**
+     * @param Package|null $package
+     * @return $this
+     */
+    public function setPackage(?Package $package): Tracking
+    {
+        $this->package = $package;
         return $this;
     }
 }

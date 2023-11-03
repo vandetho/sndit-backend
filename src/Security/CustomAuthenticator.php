@@ -39,41 +39,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CustomAuthenticator extends AbstractAuthenticator
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var AuthenticationSuccessHandlerInterface|null
-     */
-    private ?AuthenticationSuccessHandlerInterface $successHandler;
-
-    /**
-     * @var MoviderOTP
-     */
-    private MoviderOTP $moviderOTP;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var JWTTokenManagerInterface
-     */
-    private JWTTokenManagerInterface $JWTTokenManager;
-
-    /**
-     * @var RefreshTokenGeneratorInterface
-     */
-    private RefreshTokenGeneratorInterface $refreshTokenGenerator;
-
-    /**
-     * @var int
-     */
-    private int $refreshTokenTtl;
-
-    /**
      * CustomAuthenticator constructor.
      *
      * @param UserRepository                        $userRepository
@@ -85,21 +50,14 @@ class CustomAuthenticator extends AbstractAuthenticator
      * @param int                                   $refreshTokenTtl
      */
     public function __construct(
-        UserRepository $userRepository,
-        TranslatorInterface $translator,
-        MoviderOTP $moviderOTP,
-        JWTTokenManagerInterface $JWTTokenManager,
-        RefreshTokenGeneratorInterface $refreshTokenGenerator,
-        AuthenticationSuccessHandlerInterface $successHandler,
-        int $refreshTokenTtl
+        private readonly UserRepository $userRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly MoviderOTP $moviderOTP,
+        private readonly JWTTokenManagerInterface $JWTTokenManager,
+        private readonly RefreshTokenGeneratorInterface $refreshTokenGenerator,
+        private readonly AuthenticationSuccessHandlerInterface $successHandler,
+        private readonly int $refreshTokenTtl
     ) {
-        $this->userRepository = $userRepository;
-        $this->successHandler = $successHandler;
-        $this->moviderOTP = $moviderOTP;
-        $this->translator = $translator;
-        $this->JWTTokenManager = $JWTTokenManager;
-        $this->refreshTokenGenerator = $refreshTokenGenerator;
-        $this->refreshTokenTtl = $refreshTokenTtl;
     }
 
     /**
@@ -127,9 +85,14 @@ class CustomAuthenticator extends AbstractAuthenticator
             $user->setPhoneNumber($credentials['phoneNumber']);
             $user->setCountryCode($credentials['countryCode']);
             $user->setToken(TokenGenerator::generate(['symbols' => false, 'length' => 32]));
+            if ($this->moviderOTP->isEnabled()) {
+                $user->setVerified(true);
+            }
             $this->userRepository->updateUser($user);
-            $message = $this->translator->trans('flash.errors.not_registered', [], 'application');
-            throw new CustomUserMessageAuthenticationException($message, ['user' => $user]);
+            if ($this->moviderOTP->isEnabled()) {
+                $message = $this->translator->trans('flash.errors.not_registered', [], 'application');
+                throw new CustomUserMessageAuthenticationException($message, ['user' => $user]);
+            }
         }
 
         if ($user->isVerified()) {

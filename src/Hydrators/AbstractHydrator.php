@@ -37,18 +37,15 @@ abstract class AbstractHydrator extends BaseAbstractHydrator
     protected PropertyInfoExtractor $propertyInfo;
 
     /**
-     * @var string|null
-     */
-    protected ?string $dtoClass;
-
-    /**
      * AbstractHydrator constructor.
      *
      * @param EntityManagerInterface $em
      * @param string|null            $dtoClass
      */
-    public function __construct(EntityManagerInterface $em, ?string $dtoClass = null)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        protected readonly ?string $dtoClass = null
+    ){
         parent::__construct($em);
         $this->propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
             ->enableMagicMethods()
@@ -67,7 +64,6 @@ abstract class AbstractHydrator extends BaseAbstractHydrator
             $accessExtractors,
             $propertyInitializableExtractors
         );
-        $this->dtoClass = $dtoClass;
     }
 
     /**

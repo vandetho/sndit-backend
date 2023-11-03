@@ -28,7 +28,6 @@ use App\Workflow\Transition\PackageTransition;
 use Doctrine\ORM\NonUniqueResultException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations\JsonContent;
 use OpenApi\Attributes as OA;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,7 +55,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[OA\Response(
     response: Response::HTTP_UNAUTHORIZED,
     description: 'Return when user is not fully authenticated',
-    content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+    content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
 )]
 #[OA\Tag(name: 'Package')]
 #[Route(path: '/packages', name: 'sndit_api_packages_')]
@@ -175,7 +174,7 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_BAD_REQUEST,
         description: 'Return when parameters are missing',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(name: 'post', methods: ['POST'])]
     public function post(Request $request, WorkflowInterface $packageWorkflow, EmployeeRepository $employeeRepository): JsonResponse
@@ -308,7 +307,7 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}', name: 'getc', methods: ['GET'])]
     public function getc(int|string $idOrToken, EmployeeRepository $employeeRepository): JsonResponse
@@ -353,7 +352,7 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}/histories', name: 'histories', methods: ['GET'])]
     public function histories(int|string $idOrToken, Request $request, PackageHistoryRepository $packageHistoryRepository): JsonResponse
@@ -411,12 +410,12 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[OA\Response(
         response: Response::HTTP_BAD_REQUEST,
         description: 'Return when role is missing',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}/give-to-deliverer', name: 'give_to_deliverer', methods: ['POST'])]
     public function giveToDeliverer(int|string $idOrToken, Request $request, EmployeeRepository $employeeRepository): JsonResponse
@@ -469,12 +468,12 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[OA\Response(
         response: Response::HTTP_BAD_REQUEST,
         description: 'Return when role is missing',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}/take-package', name: 'take_package', methods: ['POST'])]
     public function takePackage(int|string $idOrToken): JsonResponse
@@ -534,12 +533,12 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[OA\Response(
         response: Response::HTTP_BAD_REQUEST,
         description: 'Return when role is missing',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}/delivered', name: 'delivered', methods: ['POST'])]
     public function delivered(int|string $idOrToken, Request $request): JsonResponse
@@ -605,12 +604,12 @@ class PackageController extends AbstractController
     #[OA\Response(
         response: Response::HTTP_NOT_FOUND,
         description: 'Return when package is not found',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[OA\Response(
         response: Response::HTTP_BAD_REQUEST,
         description: 'Return when package is not in state on delivery',
-        content: new JsonContent(properties: [new Model(type: ErrorResponseData::class)])
+        content: new OA\JsonContent(ref: new Model(type: ErrorResponseData::class))
     )]
     #[Route(path: '/{idOrToken}/locations', name: 'locations', methods: ['GET'])]
     public function delivererLocations(int|string $idOrToken, TrackingRepository $trackingRepository): JsonResponse

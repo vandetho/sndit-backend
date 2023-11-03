@@ -64,8 +64,6 @@ class TrackingController extends AbstractController
         $this->trackingRepository = $trackingRepository;
     }
 
-
-
     /**
      * @param Request $request
      * @return JsonResponse
