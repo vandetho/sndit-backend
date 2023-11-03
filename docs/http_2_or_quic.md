@@ -16,3 +16,34 @@ Add the following code to your server conf:
     listen 443 ssl quic reuseport;
     http2 on;
 ```
+
+If you use a firewall like ufw, it is also necessary to allow UDP which is used by QUIC protocol.
+```
+sudo ufw allow 80/udp
+sudo ufw allow 443/udp
+sudo ufw reload
+```
+
+Check if the port is allow:
+```
+sudo ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+Nginx Full                 ALLOW       Anywhere
+SSH                        ALLOW       Anywhere
+OpenSSH                    ALLOW       Anywhere
+22                         ALLOW       Anywhere
+80/udp                     ALLOW       Anywhere
+443/udp                    ALLOW       Anywhere
+Nginx Full (v6)            ALLOW       Anywhere (v6)
+SSH (v6)                   ALLOW       Anywhere (v6)
+OpenSSH (v6)               ALLOW       Anywhere (v6)
+22 (v6)                    ALLOW       Anywhere (v6)
+80/udp (v6)                ALLOW       Anywhere (v6)
+443/udp (v6)               ALLOW       Anywhere (v6)
+```
+
+To check if your website is run on Quic
+https://http3check.net/
