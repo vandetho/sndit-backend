@@ -398,38 +398,6 @@ class User extends AbstractEntity implements UserInterface
     }
 
     /**
-     * @return array
-     */
-    public function getMarking(): array
-    {
-        return $this->marking;
-    }
-
-    /**
-     * @param array $marking
-     * @return User
-     */
-    public function setMarking(array $marking): User
-    {
-        $this->marking = $marking;
-
-        return $this;
-    }
-
-    /**
-     * @param string $state
-     * @return bool
-     */
-    public function hasState(string $state): bool
-    {
-        if (isset($this->marking[$state])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @return string|null
      */
     public function getLastName(): ?string

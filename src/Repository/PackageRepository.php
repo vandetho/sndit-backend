@@ -446,7 +446,7 @@ class PackageRepository extends AbstractRepository
     {
         return $this->_em->createQueryBuilder()
             ->select('ssc.id')
-            ->from('App:Company', 'ssc')
+            ->from(Company::class, 'ssc')
             ->innerJoin('ssc.employees', 'ssce')
             ->where('ssce.user = :user');
     }

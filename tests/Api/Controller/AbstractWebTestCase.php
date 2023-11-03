@@ -74,7 +74,6 @@ abstract class AbstractWebTestCase extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode(['phoneNumber' => $phoneNumber, 'countryCode' => '+855'], JSON_THROW_ON_ERROR),
         );
-        dump($this->client->getResponse()->getContent());
         $data = json_decode($this->client->getResponse()->getContent(), false, 512, JSON_THROW_ON_ERROR);
         $token = $this->client->getResponse()->getStatusCode() === Response::HTTP_OK ? $data->token : $data->data->token;
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
