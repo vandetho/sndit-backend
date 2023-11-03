@@ -11,7 +11,7 @@ import { faEnvelope, faHome, faMapLocationDot } from '@fortawesome/free-solid-sv
 import Logo from '@images/white_logo_with_text.png';
 import { GitHub } from '@mui/icons-material';
 
-const PREFIX = 'Footer';
+const PREFIX = 'footer';
 
 const classes = {
     root: `${PREFIX}-root`,
@@ -22,16 +22,14 @@ const classes = {
 const Root = styled('div')(({ theme }) => ({
     [`&.${classes.root}`]: {
         marginTop: 'auto',
-        height: 200,
+        minHeight: 200,
         background: gradients.primary,
         padding: theme.spacing(4),
         [theme.breakpoints.down('md')]: {
             height: 400,
         },
     },
-
     [`& .${classes.container}`]: {},
-
     [`& .${classes.logoImage}`]: {
         alignContent: 'center',
         height: 64,
@@ -96,6 +94,7 @@ const Footer: React.FC<FooterProps> = (props) => {
                                     <img
                                         src={require('@images/kromb_logo.png')}
                                         alt="kromb is a team management system"
+                                        className={classes.logoImage}
                                     />
                                 </Link>
                             </Stack>

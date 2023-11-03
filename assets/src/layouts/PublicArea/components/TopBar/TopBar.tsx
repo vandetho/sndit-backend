@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Button, IconButton, Link, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
+import { AppBar as MuiAppBar, Button, IconButton, Link, Toolbar, useMediaQuery, useScrollTrigger } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
@@ -12,7 +12,7 @@ import { Drawer } from './components';
 import Logo from '@images/white_logo_with_text.png';
 import { GitHub } from '@mui/icons-material';
 
-const PREFIX = 'Topbar';
+const PREFIX = 'top-bar';
 
 const classes = {
     root: `${PREFIX}-root`,
@@ -21,17 +21,14 @@ const classes = {
     logoImage: `${PREFIX}-logoImage`,
 };
 
-const StyledElevationScroll = styled(ElevationScroll)(({ theme }) => ({
+const AppBar = styled(MuiAppBar)(({ theme }) => ({
     [`& .${classes.root}`]: {
         boxShadow: 'none',
-        background: gradients.primary,
         border: 'none',
     },
-
     [`& .${classes.flexGrow}`]: {
         flexGrow: 1,
     },
-
     [`& .${classes.toolbar}`]: {
         height: 80,
         [theme.breakpoints.down('lg')]: {
@@ -46,7 +43,6 @@ const StyledElevationScroll = styled(ElevationScroll)(({ theme }) => ({
             width: theme.breakpoints.values.lg,
         },
     },
-
     [`& .${classes.logoImage}`]: {
         alignContent: 'center',
         height: 64,
@@ -72,14 +68,17 @@ function ElevationScroll(props: Props) {
 
     return React.cloneElement(children, {
         elevation: trigger ? 4 : 0,
+        style: {
+            background: gradients.primary,
+        },
     });
 }
 
-interface TopbarProps {
+interface TopBarProps {
     className?: string;
 }
 
-const Topbar: React.FC<TopbarProps> = (props) => {
+const TopBar: React.FC<TopBarProps> = (props) => {
     const { className, ...rest } = props;
     const { t } = useTranslation();
     const theme = useTheme();
@@ -87,7 +86,7 @@ const Topbar: React.FC<TopbarProps> = (props) => {
     const { isOpen, onToggle } = useModalState();
 
     return (
-        <StyledElevationScroll {...props}>
+        <ElevationScroll {...props}>
             <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
                 <Toolbar className={classes.toolbar}>
                     <Link component={RouterLink} to="/" color="inherit">
@@ -122,8 +121,8 @@ const Topbar: React.FC<TopbarProps> = (props) => {
                     <Drawer isOpen={isOpen} onToggle={onToggle} />
                 </Toolbar>
             </AppBar>
-        </StyledElevationScroll>
+        </ElevationScroll>
     );
 };
 
-export default Topbar;
+export default TopBar;

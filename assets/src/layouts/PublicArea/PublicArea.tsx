@@ -3,9 +3,9 @@ import { styled, useTheme } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 import { Outlet } from 'react-router';
-import { Footer, Topbar } from './components';
+import { Footer, TopBar } from './components';
 
-const PREFIX = 'PublicArea';
+const PREFIX = 'public-area';
 
 const classes = {
     root: `${PREFIX}-root`,
@@ -40,7 +40,7 @@ const PublicArea: React.FC<PublicAreaProps> = () => {
             })}
         >
             <CssBaseline />
-            <Topbar />
+            <TopBar />
             <main className={classes.content} style={{ minHeight: `calc(100vh - ${isMobile ? 400 : 200}px)` }}>
                 <Outlet />
             </main>
