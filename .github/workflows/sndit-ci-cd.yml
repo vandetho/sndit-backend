@@ -65,9 +65,9 @@ jobs:
                       composer install --no-progress --prefer-dist --optimize-autoloader
                       php bin/console sndit:install --env=test
                 env:
-                    DATABASE_URL:        mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/${{ secrets.MYSQL_DATABASE }}
-                    JWT_SECRET_KEY:      %kernel.project_dir%/config/jwt/private.pem
-                    JWT_PUBLIC_KEY:      %kernel.project_dir%/config/jwt/public.pem
+                    DATABASE_URL:        'mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/${{ secrets.MYSQL_DATABASE }}'
+                    JWT_SECRET_KEY:      '%kernel.project_dir%/config/jwt/private.pem'
+                    JWT_PUBLIC_KEY:      '%kernel.project_dir%/config/jwt/public.pem'
                     JWT_PASSPHRASE:      ${{ secrets.JWT_PASSPHRASE }}
                     USER_IDENTITY_FIELD: ${{ secrets.USER_IDENTITY_FIELD }}
 
