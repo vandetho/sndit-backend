@@ -1,42 +1,101 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Symfony
-
+name: Deploy Symfony with MySQL to preview
 on:
-  push:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    push:
+        branches: [ main ]
 
 jobs:
-  symfony-tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-    - uses: actions/checkout@v3
-    - name: Copy .env.test.local
-      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Create Database
-      run: |
-        mkdir -p data
-        touch data/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-      run: vendor/bin/phpunit
+    symfony:
+        name:        Symfony (PHP ${{ matrix.php-versions }})
+        environment: production
+        runs-on:     ubuntu-latest
+
+        # Docs: https://docs.github.com/en/actions/using-containerized-services
+        services:
+            mysql:
+                image:   mysql:latest
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: false
+                    MYSQL_ROOT_PASSWORD:        ${{ secrets.MYSQL_ROOT_PASSWORD }}
+                    MYSQL_DATABASE:             ${{ secrets.MYSQL_DATABASE }}
+                ports:
+                    - 3306:3306
+                options: >-
+                         --health-cmd="mysqladmin ping"
+                         --health-interval=10s
+                         --health-timeout=5s
+                         --health-retries=3
+        strategy:
+            fail-fast: false
+            matrix:
+                php-versions: [ '8.2' ]
+        steps:
+            -
+                name: Checkout
+                uses: actions/checkout@v4
+            -
+                name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    tools:       phpunit-bridge
+                    extensions:  mbstring, xml, ctype, iconv, intl, mysql, imagick, curl, dom, gd, json, pdo, zip
+                    coverage:    xdebug
+
+            # Local MySQL service in GitHub hosted environments is disabled by default.
+            # If you are using it instead of service containers, make sure you start it.
+            # - name: Start mysql service
+            #   run: sudo systemctl start mysql.service
+
+            -
+                name: Get composer cache directory
+                id:   composer-cache
+                run:  echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -
+                name: Cache composer dependencies
+                uses: actions/cache@v3
+                with:
+                    path:         ${{ steps.composer-cache.outputs.dir }}
+                    key:          ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: ${{ runner.os }}-composer-
+
+            -
+                name: Install Composer dependencies And Application
+                run:  |
+                      composer install --no-progress --prefer-dist --optimize-autoloader
+                      php bin/console sndit:install --env=test
+                env:
+                    DATABASE_URL:        mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/${{ secrets.MYSQL_DATABASE }}
+                    JWT_SECRET_KEY:      %kernel.project_dir%/config/jwt/private.pem
+                    JWT_PUBLIC_KEY:      %kernel.project_dir%/config/jwt/public.pem
+                    JWT_PASSPHRASE:      ${{ secrets.JWT_PASSPHRASE }}
+                    USER_IDENTITY_FIELD: ${{ secrets.USER_IDENTITY_FIELD }}
+
+            -
+                name: Install PHPUnit
+                run:  simple-phpunit install
+
+            -
+                name: Run tests
+                run:  simple-phpunit --coverage-text
+
+            -
+                name: Deploy using ssh
+                uses: appleboy/ssh-action@v1.0.0
+                with:
+                    host:            ${{ secrets.HOST }}
+                    username:        ${{ secrets.USERNAME }}
+                    password:        ${{ secrets.PASSWORD }}
+                    port:            ${{ secrets.PORT }}
+                    command_timeout: ${{ secrets.TIMEOUT }}
+                    script:          |
+                                     cd ${{ secrets.PROJECT_FOLDER}}
+                                     sudo git pull https://${{secrets.GITHUB_USERNAME}}:${{ secrets.GITHUB_TOKEN }}@github.com/vandetho/sndit-backend.git main
+                                     sudo composer install --no-progress --prefer-dist --optimize-autoloader
+                                     sudo php bin/console assets:install
+                                     sudo npm install --legacy-peer-deps
+                                     sudo npm run build
+                                     sudo chown -R www-data:www-data .
+                                     sudo systemctl restart nginx
+                                     sudo systemctl restart php8.2-fpm
+            
