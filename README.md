@@ -11,6 +11,12 @@ understand software architecture.
 
 Check the result https://sndit.io
 
+## Link Repository
+
+This is a mobile app that is supposed to be used with this project
+
+[Sndit Mobile App](https://github.com/vandetho/sndit-mobile)
+
 ## Sponsored by :
 
 <a href="https://kromb.io">
