@@ -1,18 +1,20 @@
 # Sndit
 
 <a href="https://kromb.io">
-<img src="public/images/icon-256x256.png" width="256" alt="Kromb Logo" />
+    <img src="public/images/icon-192x192.png" width="192" alt="Sndit" />
 </a>
 
 Sndit is a system design for package delivery tracking which can be used by small businesses and people who want to
 understand software architecture.
+
+**<span style="color:red">CAUTION</span>**: This project is not yet used in real life so for small businesses some additional modifications may be needed.
 
 Check the result https://sndit.io
 
 ## Sponsored by :
 
 <a href="https://kromb.io">
-<img src="public/images/kromb_logo.png" width="150" alt="Kromb Logo" />
+    <img src="public/images/kromb_logo.png" width="174" alt="Kromb a team management system" />
 </a>
 
 ## Enhanced Entity Relationship (EER) Model
