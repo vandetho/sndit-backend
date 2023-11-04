@@ -35,7 +35,7 @@ class RequestManipulator
      */
     public static function getData(Request $request, FormInterface $form): array
     {
-        return $request->getContentType() === 'json' ? $request->toArray() : $request->request->all($form->getName() ?: null);
+        return $request->getContentTypeFormat() === 'json' ? $request->toArray() : $request->request->all($form->getName() ?: null);
     }
 
 }
