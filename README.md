@@ -43,6 +43,7 @@ Coming Soon...
 
 For usage documentation, see:
 
-[Installation](docs/installation.md)
+[Installation](docs/installation.md)\
+[Activate HTTP2/HTTP3 (QUIC) ](docs/http_2_or_quic.md)
 
 See the bundled [LICENSE](LICENSE) file.
