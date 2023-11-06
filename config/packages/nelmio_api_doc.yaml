@@ -1,8 +1,8 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Sndit
+            description: SNDIT is a delivery process management system, available on mobile app on iOS and Android devices. The app allows small business owners who already have established or wish to establish their own delivery team to manage and track their delivery status.
             version: 1.0.0
     areas: # to filter documented areas
         path_patterns:
